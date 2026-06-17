@@ -248,7 +248,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
     <!-- SOBRE -->
     <div class="screen" id="s-info">
       <div class="card">
-        <div class="card-ttl"><span class="ci">🥬</span>NFT Alface — v2.2</div>
+        <div class="card-ttl"><span class="ci">🥬</span>NFT Alface — v2.3</div>
         <div class="note" style="margin-bottom:14px">Cálculo de solução nutritiva para alface em NFT. Duas receitas de marcas diferentes, lidas direto das planilhas laminadas. <strong>dose = g(3000L) × ΔEC ÷ EC_base × (volume ÷ 3000)</strong>, com ΔEC = EC alvo − EC da água.</div>
         <span class="slbl">🔵 Alface Yara · EC base 1,41</span>
         <div style="font-size:.78rem;line-height:1.8;margin-bottom:12px;color:#445">
@@ -544,16 +544,17 @@ function corrRec(rid){
 function tabRec(rid){
   const rec=RECIPES[rid], t=rec.tag, vol=Math.max(1,val(rid+'-tvol',3000));
   document.getElementById(rid+'-tvol-lbl').textContent=nf(vol);
-  const ferts=allFerts(rec), deltas=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0];
+  const ferts=allFerts(rec), deltas=Array.from({length:20},(_,k)=>(k+1)/10);
   const th=`<th class="th-${t}">ΔEC</th>`+ferts.map(f=>`<th class="th-${t}">${f.nome.split(' ')[0]}</th>`).join('');
   const rows=deltas.map((d,i)=>{
-    const bg=i%2?'#fff':'#f7faf7', frac=d/rec.ecBase;
-    let c=`<td class="td-d td-d-${t}">${d.toFixed(1)}</td>`;
-    ferts.forEach(f=>{ c+=`<td style="background:${bg}">${fmtG(f.g*frac*(vol/REF_VOL))}</td>`; });
+    const over=d>rec.ecBase+1e-9, frac=d/rec.ecBase;
+    const bg=over?'#fff7ed':(i%2?'#fff':'#f7faf7');
+    let c=`<td class="td-d td-d-${t}">${d.toFixed(1)}${over?' ⚠':''}</td>`;
+    ferts.forEach(f=>{ c+=`<td style="background:${bg}${over?';color:#b45309':''}">${fmtG(f.g*frac*(vol/REF_VOL))}</td>`; });
     return `<tr>${c}</tr>`;
   }).join('');
   document.getElementById(rid+'-tab-out').innerHTML=`<table class="corr-tbl"><thead><tr>${th}</tr></thead><tbody>${rows}</tbody></table>
-    <div style="padding:10px 14px;font-size:.64rem;color:var(--gray)">EC base ${rec.nome}: ${rec.ecBase.toFixed(3)} mS/cm (receita cheia em 3000 L).</div>`;
+    <div style="padding:10px 14px;font-size:.64rem;color:var(--gray)">EC base ${rec.nome}: ${rec.ecBase.toFixed(3)} mS/cm (receita cheia em 3000 L). Linhas com ⚠ passam de 100% da receita cheia (solução mais concentrada que o normal).</div>`;
 }
 
 // ── COMPARAR ──
