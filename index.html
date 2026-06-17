@@ -254,7 +254,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
     <!-- SOBRE -->
     <div class="screen" id="s-info">
       <div class="card">
-        <div class="card-ttl"><span class="ci">🥬</span>NFT Alface — v2.4</div>
+        <div class="card-ttl"><span class="ci">🥬</span>NFT Alface — v2.5</div>
         <div class="note" style="margin-bottom:14px">Cálculo de solução nutritiva para alface em NFT. Duas receitas de marcas diferentes, lidas direto das planilhas laminadas. <strong>dose = g(3000L) × ΔEC ÷ EC_base × (volume ÷ 3000)</strong>, com ΔEC = EC alvo − EC da água.</div>
         <span class="slbl">🔵 Alface Yara · EC base 1,41</span>
         <div style="font-size:.78rem;line-height:1.8;margin-bottom:12px;color:#445">
@@ -359,10 +359,13 @@ function getSeason(){
   return {nome:'Primavera',emoji:'🌱',ec:1.41,summer:false,msg:'clima ameno — EC padrão ~1,41'};
 }
 function renderSeason(rid){
-  const s=getSeason(), el=document.getElementById(rid+'-season'); if(!el)return;
-  el.className='season'+(s.summer?' summer':'');
-  el.innerHTML=`<span style="font-size:1.3rem">${s.emoji}</span><div><b>${s.nome}</b> (hoje): ${s.msg}.</div><button class="sbtn rip" onclick="setF('${rid}','alvo',${s.ec})">Usar ${s.ec.toFixed(2).replace('.',',')}</button>`;
+  const s=getSeason(), ecBr=s.ec.toFixed(2).replace('.',',');
+  const cal=document.getElementById(rid+'-season');
+  if(cal){ cal.className='season'+(s.summer?' summer':''); cal.innerHTML=`<span style="font-size:1.3rem">${s.emoji}</span><div><b>${s.nome}</b> (hoje): ${s.msg}.</div><button class="sbtn rip" onclick="setF('${rid}','alvo',${s.ec})">Usar ${ecBr}</button>`; }
+  const cor=document.getElementById(rid+'-cseason');
+  if(cor){ cor.className='season'+(s.summer?' summer':''); cor.innerHTML=`<span style="font-size:1.3rem">${s.emoji}</span><div><b>${s.nome}</b> (hoje): ${s.msg}.</div><button class="sbtn rip" onclick="setCorrDs('${rid}',${s.ec})">Usar ${ecBr}</button>`; }
 }
+function setCorrDs(rid,v){ document.getElementById(rid+'-cDs').value=v; corrRec(rid); }
 
 // ── ABA DE RECEITA ──
 function buildRecipeScreen(rid){
@@ -374,13 +377,13 @@ function buildRecipeScreen(rid){
       <div class="rh-ec">⚡ EC base ${rec.ecBase.toFixed(2)} mS/cm · 3000 L${rec.baldes.length>1?' · 2 baldes':''}</div>
     </div>
     <div class="tab-row">
-      <button class="tab rip on" id="t-${rid}-calc" onclick="swTab('${rid}','calc')">⚗️ Calcular</button>
+      <button class="tab rip on" id="t-${rid}-corr" onclick="swTab('${rid}','corr')">⚡ Correção</button>
+      <button class="tab rip" id="t-${rid}-calc" onclick="swTab('${rid}','calc')">⚗️ Calcular</button>
       <button class="tab rip" id="t-${rid}-rec" onclick="swTab('${rid}','rec')">📋 Receita</button>
-      <button class="tab rip" id="t-${rid}-corr" onclick="swTab('${rid}','corr')">⚡ Correção</button>
       <button class="tab rip" id="t-${rid}-tab" onclick="swTab('${rid}','tab')">📊 Tabela</button>
     </div>
 
-    <div id="p-${rid}-calc">
+    <div id="p-${rid}-calc" style="display:none">
       <div class="howto">🆕 <b>Calcular</b> = preparar a solução do <b>zero</b> (tanque novo ou vazio). Informe a água, o EC alvo e o volume — o app diz quanto de cada adubo colocar.</div>
       <div class="card">
         <div class="card-ttl"><span class="ci">⚗️</span>Calcular doses</div>
@@ -422,7 +425,7 @@ function buildRecipeScreen(rid){
       <div class="card"><div class="card-ttl"><span class="ci">📝</span>Passo a passo</div><div class="steps" id="${rid}-rec-steps"></div></div>
     </div>
 
-    <div id="p-${rid}-corr" style="display:none">
+    <div id="p-${rid}-corr">
       <div class="howto">🔧 <b>Correção</b> = o tanque <b>já está rodando</b> e o EC saiu do lugar. Informe o EC de agora e o que você quer — o app diz quanto <b>adicionar</b> (se o EC baixou) ou quanta <b>água</b> colocar (se subiu).</div>
       <div class="card">
         <div class="card-ttl"><span class="ci">⚡</span>Correção de EC</div>
@@ -430,6 +433,14 @@ function buildRecipeScreen(rid){
           <div class="inp-g"><label>EC atual</label><input type="number" id="${rid}-cAt" value="1.0" step="0.01" oninput="corrRec('${rid}')"><div class="unit">mS/cm</div></div>
           <div class="inp-g"><label>EC desejado</label><input type="number" id="${rid}-cDs" value="${rec.ecAlvo}" step="0.01" oninput="corrRec('${rid}')"><div class="unit">mS/cm</div></div>
         </div>
+        <div style="font-size:.68rem;font-weight:700;color:var(--gray);margin:2px 0 7px;letter-spacing:.3px">🎯 EC DESEJADO RÁPIDO (por estação)</div>
+        <div class="quick-row" id="${rid}-cecpreset">
+          <button class="qbtn rip ${Math.abs(rec.ecAlvo-1.30)<.005?'on':''}" data-ec="1.30" onclick="setCorrDs('${rid}',1.30)">☀️ 1,30</button>
+          <button class="qbtn rip ${Math.abs(rec.ecAlvo-1.41)<.005?'on':''}" data-ec="1.41" onclick="setCorrDs('${rid}',1.41)">🌤️ 1,41</button>
+          <button class="qbtn rip ${Math.abs(rec.ecAlvo-1.60)<.005?'on':''}" data-ec="1.60" onclick="setCorrDs('${rid}',1.60)">❄️ 1,60</button>
+        </div>
+        <div class="season" id="${rid}-cseason"></div>
+        <div style="font-size:.68rem;font-weight:700;color:var(--gray);margin:13px 0 7px;letter-spacing:.3px">🪣 VOLUME DO TANQUE</div>
         <div class="vol-row"><span class="vl">Volume</span><button class="vol-btn rip" onclick="adjRecVol('${rid}','corr',-100)">−</button>
           <input class="vol-inp" id="${rid}-cvol" type="number" value="3000" oninput="corrRec('${rid}')"><button class="vol-btn rip" onclick="adjRecVol('${rid}','corr',100)">+</button><span style="font-size:.78rem;color:var(--gray)">L</span></div>
       </div>
@@ -554,6 +565,7 @@ function recRec(rid){
 function corrRec(rid){
   const rec=RECIPES[rid], t=rec.tag;
   const at=val(rid+'-cAt',0), ds=val(rid+'-cDs',rec.ecAlvo), vol=Math.max(1,val(rid+'-cvol',3000));
+  const ecp=document.getElementById(rid+'-cecpreset'); if(ecp) ecp.querySelectorAll('.qbtn').forEach(b=>b.classList.toggle('on',Math.abs(+b.dataset.ec-ds)<0.005));
   const out=document.getElementById(rid+'-corr-out'), delta=ds-at;
   if(Math.abs(delta)<0.005){ out.innerHTML='<div class="alrt alrt-ok"><span class="ai">✅</span><div>EC já no valor desejado.</div></div>'; return; }
   if(delta<0){
