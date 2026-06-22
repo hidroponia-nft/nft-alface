@@ -289,7 +289,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
     <!-- SOBRE -->
     <div class="screen" id="s-info">
       <div class="card">
-        <div class="card-ttl"><span class="ci">🥬</span>NFT Alface — v2.8</div>
+        <div class="card-ttl"><span class="ci">🥬</span>NFT Alface — v2.9</div>
         <div class="note" style="margin-bottom:14px">Cálculo de solução nutritiva para alface em NFT. Duas receitas de marcas diferentes, lidas direto das planilhas laminadas. <strong>dose = g(3000L) × ΔEC ÷ EC_base × (volume ÷ 3000)</strong>, com ΔEC = EC alvo − EC da água.</div>
         <span class="slbl">🔵 Alface Yara · EC base 1.410 µS/cm</span>
         <div style="font-size:.78rem;line-height:1.8;margin-bottom:12px;color:#445">
@@ -297,8 +297,8 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
         </div>
         <span class="slbl">🟣 Alface Haifa · EC base ≈1.300 µS/cm</span>
         <div style="font-size:.78rem;line-height:1.8;margin-bottom:12px;color:#445">
-          <strong>Balde A:</strong> Nit. Cálcio 1260 · Móvel Ca 60 · Fetri Combi 45 · Basafer 57<br>
-          <strong>Balde B:</strong> NPK 13-02-44 780 · Sulf. Magnésio 690 · Nitr. Magnésio 180 · MKP 360
+          <strong>Balde A:</strong> Calcinit 1260 · Móvel Ca 60 · Fetrilon Combi 1 45 · Basafer Plus 57<br>
+          <strong>Balde B:</strong> Multi-npK 13-2-44 780 · Magnésio Ultra 690 · Haifa Mag 180 · Haifa MKP 360
         </div>
         <span class="slbl">Observações</span>
         <div style="font-size:.74rem;color:var(--gray);line-height:1.75">
@@ -342,20 +342,20 @@ const RECIPES = {
   },
   haifa: {
     nome:'Alface Haifa', tag:'ha',
-    sub:'Nit. Cálcio · Móvel Ca · Fetri Combi · Basafer + NPK · Mg',
+    sub:'Calcinit · Móvel Ca · Fetrilon · Basafer + Multi-npK · Mg',
     ecBase:1278, ecAlvo:1300,
     baldes:[
       {id:'A', nome:'Balde A', ferts:[
-        {nome:'Nitrato de Cálcio', fml:'Ca(NO₃)₂',  g:1260, first:true},
-        {nome:'Móvel Ca',          fml:'Cálcio',    g:60},
-        {nome:'Fetri Combi',       fml:'micros',    g:45, micro:true},
-        {nome:'Basafer',           fml:'Fe',        g:57, micro:true},
+        {nome:'Calcinit',          fml:'Nitrato de Cálcio · Ca(NO₃)₂',  g:1260, first:true},
+        {nome:'Móvel Ca',          fml:'Cálcio complementar',           g:60},
+        {nome:'Fetrilon Combi 1',  fml:'Micros (Fe·Mn·Zn·Cu·B·Mo)',     g:45, micro:true},
+        {nome:'Basafer Plus',      fml:'Ferro · 6% Fe-EDDHA',           g:57, micro:true},
       ]},
       {id:'B', nome:'Balde B', ferts:[
-        {nome:'NPK 13-02-44',        fml:'N-P₂O₅-K₂O',    g:780, fosfato:true},
-        {nome:'Sulfato de Magnésio', fml:'MgSO₄·7H₂O',    g:690},
-        {nome:'Nitrato de Magnésio', fml:'Mg(NO₃)₂·6H₂O', g:180},
-        {nome:'MKP',                 fml:'KH₂PO₄',        g:360, fosfato:true},
+        {nome:'Multi-npK 13-2-44', fml:'NPK 13-02-44',                  g:780, fosfato:true},
+        {nome:'Magnésio Ultra',    fml:'Sulfato de Mg · MgSO₄·7H₂O',    g:690},
+        {nome:'Haifa Mag',         fml:'Nitrato de Mg · 11-0-0+16MgO',  g:180},
+        {nome:'Haifa MKP',         fml:'Fosfato · 0-52-34 (KH₂PO₄)',    g:360, fosfato:true},
       ]}
     ]
   }
