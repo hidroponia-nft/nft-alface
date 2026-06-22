@@ -317,6 +317,8 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
           <div class="inp-g"><label>📅 Cotação</label><input type="text" id="cfg-data" placeholder="jun/2026" oninput="setCfg('data',this.value)" style="font-size:.8rem;font-weight:700;text-align:left;padding:11px"><div class="unit">mês/ano</div></div>
         </div>
         <div id="prices-list"></div>
+        <button class="share-btn rip" style="margin-top:14px" onclick="sharePrices()">📤 Enviar meus preços</button>
+        <div class="note">Os preços oficiais ficam <b>gravados no app</b> (iguais em todo aparelho). O que você digita aqui vale neste aparelho — quando terminar, toque em <b>Enviar meus preços</b> e me mande, que eu gravo no app pra valer em todos.</div>
       </div>
       <div class="card">
         <div class="card-ttl"><span class="ci">🏡</span>Minhas estufas · projeção mensal</div>
@@ -332,7 +334,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
     <!-- SOBRE -->
     <div class="screen" id="s-info">
       <div class="card">
-        <div class="card-ttl"><span class="ci">🥬</span>NFT Alface — v3.0</div>
+        <div class="card-ttl"><span class="ci">🥬</span>NFT Alface — v3.1</div>
         <div class="note" style="margin-bottom:14px">Cálculo de solução nutritiva para alface em NFT. Duas receitas de marcas diferentes, lidas direto das planilhas laminadas. <strong>dose = g(3000L) × ΔEC ÷ EC_base × (volume ÷ 3000)</strong>, com ΔEC = EC alvo − EC da água.</div>
         <span class="slbl">🔵 Alface Yara · EC base 1.410 µS/cm</span>
         <div style="font-size:.78rem;line-height:1.8;margin-bottom:12px;color:#445">
@@ -764,7 +766,10 @@ function compare(){
 }
 
 // ── PREÇOS / CUSTO ──
-let PRICES = (function(){ try{ return JSON.parse(localStorage.getItem('nft_precos')||'{}'); }catch(e){ return {}; } })();
+// Preços oficiais fixados no app (gravados aqui quando a Leslie trouxer da loja).
+// Formato: 'Nome do adubo':{saco:R$, kg:peso}. Ex.: 'Calcinit':{saco:180,kg:25}
+const DEFAULT_PRICES = {};
+let PRICES = (function(){ try{ return Object.assign({}, DEFAULT_PRICES, JSON.parse(localStorage.getItem('nft_precos')||'{}')); }catch(e){ return Object.assign({},DEFAULT_PRICES); } })();
 let CFG = (function(){ try{ return Object.assign({estufas:2,volume:3000,trocas:2,loja:'',data:''},JSON.parse(localStorage.getItem('nft_estufas')||'{}')); }catch(e){ return {estufas:2,volume:3000,trocas:2,loja:'',data:''}; } })();
 function savePrices(){ localStorage.setItem('nft_precos',JSON.stringify(PRICES)); }
 function saveCfg(){ localStorage.setItem('nft_estufas',JSON.stringify(CFG)); }
@@ -795,6 +800,18 @@ function setPrice(nome,campo,v){
 function setCfg(campo,v){
   CFG[campo]=(campo==='loja'||campo==='data')? v : (parseFloat(String(v).replace(',','.'))||0);
   saveCfg();
+}
+function sharePrices(){
+  const lst=productList().filter(p=>rkg(p.nome)!=null);
+  if(!lst.length){ toast('Cadastre ao menos um preço primeiro'); return; }
+  let txt='💲 Preços dos adubos — NFT Alface';
+  if(CFG.loja) txt+='\n🏪 '+CFG.loja;
+  if(CFG.data) txt+=' · '+CFG.data;
+  lst.forEach(p=>{ const pr=PRICES[p.nome]; txt+=`\n• ${p.nome}: R$ ${pr.saco} o saco de ${pr.kg} kg`; });
+  txt+='\n\n— código p/ o app —\n'+JSON.stringify(Object.fromEntries(lst.map(p=>[p.nome,PRICES[p.nome]])));
+  if(navigator.share){ navigator.share({title:'Preços adubos',text:txt}).catch(()=>{}); }
+  else if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(()=>toast('📋 Copiado! Mande pra mim fixar no app')).catch(()=>toast('Não foi possível copiar')); }
+  else toast('Compartilhamento indisponível');
 }
 function renderPrices(){
   const el=document.getElementById('prices-list'); if(!el) return;
