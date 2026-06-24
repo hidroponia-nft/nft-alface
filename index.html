@@ -349,7 +349,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
         <div style="font-size:.74rem;color:var(--gray);line-height:1.75">
           • Dissolver o nitrato de cálcio <strong>separado</strong> dos fosfatos.<br>
           • Na Haifa, diluir o Balde A no reservatório antes do Balde B.<br>
-          • A recomendação <strong>🌡️ pelo clima de agora</strong> (abas Calcular/Correção) usa a temperatura real do seu local via Open-Meteo: ≥25°C → EC 1.300 · 18–25°C → 1.410 · &lt;18°C → 1.600 µS/cm. Sem internet/permissão, volta pra sugestão por estação.<br>
+          • A recomendação <strong>🌡️ pela média da tarde</strong> (abas Calcular/Correção) usa a <strong>média de temperatura da tarde (12h–17h)</strong> no seu local via Open-Meteo — janela de maior calor e em que se costuma reajustar a solução: ≥25°C → EC 1.300 · 18–25°C → 1.410 · &lt;18°C → 1.600 µS/cm. Sem internet/permissão, volta pra sugestão por estação.<br>
           • <strong>💲 Preços</strong>: cadastre o preço do saco de cada adubo (salvo no aparelho) e a aba <strong>Comparar</strong> mostra o estudo de custo Yara × Haifa: por preparo, por 1.000 L e projeção mensal das suas estufas.<br>
           • pH alvo: 5,8–6,2. Em breve: histórico de preparo.
         </div>
@@ -390,7 +390,7 @@ const RECIPES = {
   haifa: {
     nome:'Alface Haifa', tag:'ha',
     sub:'Calcinit · Móvel Ca · Fetrilon · Basafer + Multi-npK · Mg',
-    ecBase:1278, ecAlvo:1300,
+    ecBase:1300, ecAlvo:1300,
     baldes:[
       {id:'A', nome:'Balde A', ferts:[
         {nome:'Calcinit',          fml:'Nitrato de Cálcio · Ca(NO₃)₂',  g:1260, first:true},
@@ -411,6 +411,7 @@ const RECIPES = {
 // ── HELPERS ──
 function fmtG(g){
   if(g==null||isNaN(g)) return '—';
+  if(g===0) return '0 g';
   if(g<0.001) return (g*1e6).toFixed(0)+' µg';
   if(g<1)     return (g*1000).toFixed(0)+' mg';
   if(g>=1000) return (g/1000).toFixed(2)+' kg';
@@ -472,8 +473,14 @@ async function fetchWeather(){
     });
     if(pos){ lat=pos.coords.latitude; lon=pos.coords.longitude; }
     else{ const ip=await fetchJSON('https://ipwho.is/'); lat=ip.latitude; lon=ip.longitude; city=ip.city||''; }
-    const w=await fetchJSON(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m`);
-    const temp=w.current.temperature_2m;
+    const w=await fetchJSON(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m&timezone=auto&forecast_days=1`);
+    const H=w.hourly||{}, times=H.time||[], temps=H.temperature_2m||[];
+    let sum=0,n=0;                                  // média da tarde (12h–17h local) — janela de maior calor e de reajuste
+    for(let i=0;i<times.length;i++){
+      const h=parseInt(String(times[i]).slice(11,13),10);
+      if(h>=12&&h<=17&&temps[i]!=null&&!isNaN(temps[i])){ sum+=temps[i]; n++; }
+    }
+    const temp = n ? sum/n : null;
     if(temp==null||isNaN(temp)) throw 0;
     if(!city){ try{ const g=await fetchJSON(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=pt`); city=g.city||g.locality||g.principalSubdivision||''; }catch(e){} }
     WEATHER={temp,city,...ecFromTemp(temp)}; WX_STATE='ok';
@@ -498,7 +505,7 @@ function renderWeather(){
         const click=o.corr?`setCorrDs('${rid}',${w.ec})`:`setF('${rid}','alvo',${w.ec})`;
         el.className='wx '+w.cls;
         el.innerHTML=`<span class="wx-emoji">${w.emoji}</span>
-          <div class="wx-body"><div class="wx-temp">${Math.round(w.temp)}°<small>C agora${place}</small></div>
+          <div class="wx-body"><div class="wx-temp">${Math.round(w.temp)}°<small>C média da tarde${place}</small></div>
           <div class="wx-msg">${w.nome}: ${w.msg}.</div></div>
           <button class="sbtn rip" onclick="${click}">Usar ${ecBr}</button>`;
         if(seas) seas.style.display='none';
@@ -535,9 +542,9 @@ function buildRecipeScreen(rid){
         <div class="sliders">
           <div class="sld-row"><span class="sld-l">💧 Água</span><input type="range" class="slider" id="${rid}-aguaR" min="0" max="2000" step="10" value="0" oninput="setF('${rid}','agua',this.value)"></div>
           <div class="sld-row"><span class="sld-l">🎯 Alvo</span><input type="range" class="slider" id="${rid}-alvoR" min="300" max="3000" step="10" value="${rec.ecAlvo}" oninput="setF('${rid}','alvo',this.value)"></div>
-          <div class="sld-row"><span class="sld-l">🪣 Volume</span><input type="range" class="slider" id="${rid}-volR" min="100" max="5000" step="50" value="3000" oninput="setF('${rid}','vol',this.value)"></div>
+          <div class="sld-row"><span class="sld-l">🪣 Volume</span><input type="range" class="slider" id="${rid}-volR" min="100" max="10000" step="50" value="3000" oninput="setF('${rid}','vol',this.value)"></div>
         </div>
-        <div style="font-size:.68rem;font-weight:700;color:var(--gray);margin:13px 0 7px;letter-spacing:.3px">🌡️ PELO CLIMA DE AGORA</div>
+        <div style="font-size:.68rem;font-weight:700;color:var(--gray);margin:13px 0 7px;letter-spacing:.3px">🌡️ PELA MÉDIA DA TARDE</div>
         <div class="wx wx-load" id="${rid}-weather"><span class="wx-spin">📡</span><div class="wx-body">Buscando o clima do seu local…</div></div>
         <div style="font-size:.68rem;font-weight:700;color:var(--gray);margin:13px 0 7px;letter-spacing:.3px">🎯 EC ALVO RÁPIDO (por estação)</div>
         <div class="quick-row" id="${rid}-ecpreset">
@@ -575,7 +582,7 @@ function buildRecipeScreen(rid){
           <div class="inp-g"><label>EC atual</label><input type="number" id="${rid}-cAt" value="1000" step="10" oninput="corrRec('${rid}')"><div class="unit">µS/cm</div></div>
           <div class="inp-g"><label>EC desejado</label><input type="number" id="${rid}-cDs" value="${rec.ecAlvo}" step="10" oninput="corrRec('${rid}')"><div class="unit">µS/cm</div></div>
         </div>
-        <div style="font-size:.68rem;font-weight:700;color:var(--gray);margin:2px 0 7px;letter-spacing:.3px">🌡️ PELO CLIMA DE AGORA</div>
+        <div style="font-size:.68rem;font-weight:700;color:var(--gray);margin:2px 0 7px;letter-spacing:.3px">🌡️ PELA MÉDIA DA TARDE</div>
         <div class="wx wx-load" id="${rid}-cweather"><span class="wx-spin">📡</span><div class="wx-body">Buscando o clima do seu local…</div></div>
         <div style="font-size:.68rem;font-weight:700;color:var(--gray);margin:13px 0 7px;letter-spacing:.3px">🎯 EC DESEJADO RÁPIDO (por estação)</div>
         <div class="quick-row" id="${rid}-cecpreset">
@@ -632,6 +639,10 @@ function calcRec(rid, animate){
   const agua=val(rid+'-agua',0), alvo=val(rid+'-alvo',rec.ecAlvo), vol=Math.max(1,val(rid+'-vol',3000));
   const delta=alvo-agua, out=document.getElementById(rid+'-calc-out');
   out.className = animate ? 'res-anim' : '';
+  if(alvo<=0){
+    out.innerHTML=`<div class="alrt alrt-w"><span class="ai">⚠️</span><div>Defina um EC alvo maior que zero.</div></div>`;
+    return;
+  }
   if(delta<=0){
     const litros=(vol*(agua/alvo-1)).toFixed(0);
     out.innerHTML=`<div class="alrt alrt-w"><span class="ai">⚠️</span><div>EC da água (${ecf(agua)}) ≥ EC alvo (${ecf(alvo)}). Não adicione fertilizante.<br>💧 Para baixar até ${ecf(alvo)} em ${nf(vol)} L, adicione <strong>${nf(litros)} L de água pura</strong>.</div></div>`;
@@ -711,6 +722,7 @@ function corrRec(rid){
   const at=val(rid+'-cAt',0), ds=val(rid+'-cDs',rec.ecAlvo), vol=Math.max(1,val(rid+'-cvol',3000));
   const ecp=document.getElementById(rid+'-cecpreset'); if(ecp) ecp.querySelectorAll('.qbtn').forEach(b=>b.classList.toggle('on',Math.abs(+b.dataset.ec-ds)<5));
   const out=document.getElementById(rid+'-corr-out'), delta=ds-at;
+  if(ds<=0){ out.innerHTML='<div class="alrt alrt-w"><span class="ai">⚠️</span><div>Defina um EC desejado maior que zero.</div></div>'; return; }
   if(Math.abs(delta)<5){ out.innerHTML='<div class="alrt alrt-ok"><span class="ai">✅</span><div>EC já no valor desejado.</div></div>'; return; }
   if(delta<0){
     const l=(vol*(at/ds-1)).toFixed(0);
