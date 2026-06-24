@@ -275,6 +275,31 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 .cost-save{margin-top:11px;background:#fff7e8;border:1px solid #ffe2b0;border-radius:13px;padding:11px 14px;font-size:.82rem;color:#7a4d00;text-align:center}
 .lnk-btn{margin-top:9px;border:none;background:linear-gradient(135deg,var(--g2),var(--gl));color:#fff;font-weight:800;font-size:.78rem;padding:10px 15px;border-radius:11px;cursor:pointer;box-shadow:0 4px 12px rgba(46,125,50,.35)}
 .lnk-btn:active{transform:scale(.96)}
+
+/* ── LOGIN / HISTÓRICO ── */
+.gbtn{width:100%;padding:13px;border:1.5px solid #dadce0;border-radius:14px;background:#fff;color:#3c4043;font-size:.9rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;box-shadow:var(--sh-sm)}
+.gbtn:active{transform:scale(.98)}
+.gbtn .gg{font-weight:900;font-size:1.05rem;background:linear-gradient(90deg,#4285F4,#ea4335 40%,#fbbc05 70%,#34a853);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.au-or{text-align:center;color:var(--gray);font-size:.7rem;font-weight:700;margin:13px 0}
+.au-inp{width:100%;padding:12px 13px;border:1.5px solid #e3e8e4;border-radius:12px;font-size:.95rem;font-weight:600;outline:none;color:var(--ink);background:#fbfcfb;margin-bottom:9px}
+.au-inp:focus{border-color:var(--gl);background:#fff}
+.au-btns{display:flex;gap:9px;margin-top:3px}
+.au-b{flex:1;padding:13px;border:none;border-radius:13px;font-size:.88rem;font-weight:800;cursor:pointer;color:#fff}
+.au-entrar{background:linear-gradient(135deg,var(--g2),var(--gl));box-shadow:0 5px 14px rgba(46,125,50,.35)}
+.au-criar{background:#eaf6ec;color:var(--g2);border:1.5px solid #bfe3c4}
+.au-b:active{transform:scale(.97)}
+.au-msg{font-size:.78rem;font-weight:700;margin-top:11px;text-align:center;min-height:1em}
+.hist-user{display:flex;align-items:center;font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:10px}
+.hist-out{margin-left:auto;border:1px solid var(--line);background:#fff;color:var(--gray);font-weight:800;font-size:.72rem;padding:7px 13px;border-radius:11px;cursor:pointer}
+.hist-item{position:relative;background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px 14px;margin-bottom:11px;box-shadow:var(--sh-sm)}
+.hist-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.hist-marca{font-size:.84rem;font-weight:800;color:var(--ink)}
+.hist-date{font-size:.66rem;color:var(--gray);font-weight:600}
+.hist-body{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:7px}
+.hist-chip{font-size:.7rem;font-weight:700;color:#445;background:#f1f5f1;border:1px solid var(--line);padding:4px 9px;border-radius:9px}
+.hist-acao{font-size:.78rem;font-weight:700;padding-right:34px}
+.hist-del{position:absolute;right:10px;bottom:10px;border:none;background:transparent;font-size:1rem;cursor:pointer;opacity:.55}
+.hist-del:active{transform:scale(.9)}
 </style>
 </head>
 <body>
@@ -334,7 +359,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
     <!-- SOBRE -->
     <div class="screen" id="s-info">
       <div class="card">
-        <div class="card-ttl"><span class="ci">🥬</span>NFT Alface — v3.2</div>
+        <div class="card-ttl"><span class="ci">🥬</span>NFT Alface — v4.0</div>
         <div class="note" style="margin-bottom:14px">Cálculo de solução nutritiva para alface em NFT. Duas receitas de marcas diferentes, lidas direto das planilhas laminadas. <strong>dose = g(3000L) × ΔEC ÷ EC_base × (volume ÷ 3000)</strong>, com ΔEC = EC alvo − EC da água.</div>
         <span class="slbl">🔵 Alface Yara · EC base 1.410 µS/cm</span>
         <div style="font-size:.78rem;line-height:1.8;margin-bottom:12px;color:#445">
@@ -351,10 +376,14 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
           • Na Haifa, diluir o Balde A no reservatório antes do Balde B.<br>
           • A recomendação <strong>🌡️ pela média da tarde</strong> (abas Calcular/Correção) usa a <strong>média de temperatura da tarde (12h–17h)</strong> no seu local via Open-Meteo — janela de maior calor e em que se costuma reajustar a solução: ≥25°C → EC 1.300 · 18–25°C → 1.410 · &lt;18°C → 1.600 µS/cm. Sem internet/permissão, volta pra sugestão por estação.<br>
           • <strong>💲 Preços</strong>: cadastre o preço do saco de cada adubo (salvo no aparelho) e a aba <strong>Comparar</strong> mostra o estudo de custo Yara × Haifa: por preparo, por 1.000 L e projeção mensal das suas estufas.<br>
-          • pH alvo: 5,8–6,2. Em breve: histórico de preparo.
+          • pH alvo: 5,8–6,2.<br>
+          • <strong>📜 Histórico</strong>: entre com Google ou e-mail/senha e salve suas medições (botão 💾 na aba Correção). Cada um tem seu histórico, salvo na conta e disponível em qualquer aparelho — não fica preso a um celular.
         </div>
       </div>
     </div>
+
+    <!-- HISTÓRICO -->
+    <div class="screen" id="s-hist"></div>
 
   </div>
 
@@ -363,11 +392,15 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
     <button class="bnbtn rip" id="bn-haifa" onclick="goTo('haifa')"><span class="ico">🟣</span><span>Haifa</span></button>
     <button class="bnbtn rip" id="bn-cmp" onclick="goTo('cmp')"><span class="ico">⚖️</span><span>Comparar</span></button>
     <button class="bnbtn rip" id="bn-prices" onclick="goTo('prices')"><span class="ico">💲</span><span>Preços</span></button>
+    <button class="bnbtn rip" id="bn-hist" onclick="goTo('hist')"><span class="ico">📜</span><span>Histórico</span></button>
     <button class="bnbtn rip" id="bn-info" onclick="goTo('info')"><span class="ico">ℹ️</span><span>Sobre</span></button>
   </div>
   <div id="toast"></div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const REF_VOL = 3000;
 const RECIPES = {
@@ -723,10 +756,10 @@ function corrRec(rid){
   const ecp=document.getElementById(rid+'-cecpreset'); if(ecp) ecp.querySelectorAll('.qbtn').forEach(b=>b.classList.toggle('on',Math.abs(+b.dataset.ec-ds)<5));
   const out=document.getElementById(rid+'-corr-out'), delta=ds-at;
   if(ds<=0){ out.innerHTML='<div class="alrt alrt-w"><span class="ai">⚠️</span><div>Defina um EC desejado maior que zero.</div></div>'; return; }
-  if(Math.abs(delta)<5){ out.innerHTML='<div class="alrt alrt-ok"><span class="ai">✅</span><div>EC já no valor desejado.</div></div>'; return; }
+  if(Math.abs(delta)<5){ out.innerHTML='<div class="alrt alrt-ok"><span class="ai">✅</span><div>EC já no valor desejado.</div></div>'+saveBtnHTML(rid); return; }
   if(delta<0){
     const l=(vol*(at/ds-1)).toFixed(0);
-    out.innerHTML=`<div class="alrt alrt-w"><span class="ai">💧</span><div>Diluir: adicione <strong>${nf(l)} L de água pura</strong>.<br><small>${nf(vol)} L × (${ecf(at)}/${ecf(ds)} − 1)</small></div></div>`;
+    out.innerHTML=`<div class="alrt alrt-w"><span class="ai">💧</span><div>Diluir: adicione <strong>${nf(l)} L de água pura</strong>.<br><small>${nf(vol)} L × (${ecf(at)}/${ecf(ds)} − 1)</small></div></div>`+saveBtnHTML(rid);
     return;
   }
   const frac=delta/rec.ecBase;
@@ -735,7 +768,7 @@ function corrRec(rid){
   out.innerHTML=`<div class="res-balde res-${t}">
     <div class="balde-tag balde-tag-${t}" style="display:flex;justify-content:space-between;width:100%">➕ Adicionar — ${nf(vol)} L<span class="fert-pill pill-${t}">+${ecf(delta)} µS/cm</span></div>
     ${doses.map(f=>fertRowHTML(f,t,0,maxG)).join('')}
-  </div>`;
+  </div>`+saveBtnHTML(rid);
 }
 
 // ── TABELA ──
@@ -866,7 +899,7 @@ function costBlock(vol,delta){
 }
 
 // ── NAVEGAÇÃO ──
-const LBL={yara:'Yara',haifa:'Haifa',cmp:'Comparar',prices:'Preços',info:'Sobre'};
+const LBL={yara:'Yara',haifa:'Haifa',cmp:'Comparar',prices:'Preços',hist:'Histórico',info:'Sobre'};
 function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('s-'+id).classList.add('active');
@@ -878,6 +911,7 @@ function goTo(id){
   if(id==='yara'||id==='haifa') calcRec(id,true);
   if(id==='cmp') compare();
   if(id==='prices') renderPrices();
+  if(id==='hist') renderHist();
 }
 function swTab(rid,tab){
   ['calc','rec','corr','tab'].forEach(p=>{document.getElementById('p-'+rid+'-'+p).style.display='none';document.getElementById('t-'+rid+'-'+p).classList.remove('on');});
@@ -902,6 +936,153 @@ document.addEventListener('pointerdown',function(e){
   r.style.top=(e.clientY-rect.top-size/2)+'px';
   el.appendChild(r); setTimeout(()=>r.remove(),600);
 });
+
+// ── FIREBASE · LOGIN · HISTÓRICO ──
+const firebaseConfig = {
+  apiKey: "AIzaSyC_0iBUjI6QTT_HlpluMK5lv69vmyj1poI",
+  authDomain: "nft-alface.firebaseapp.com",
+  projectId: "nft-alface",
+  storageBucket: "nft-alface.firebasestorage.app",
+  messagingSenderId: "890385133210",
+  appId: "1:890385133210:web:e7fd6c9756e1f37b0cf923"
+};
+let FB_AUTH=null, FB_DB=null, FB_USER=null, FB_OK=false;
+try{
+  if(window.firebase && firebase.initializeApp){
+    firebase.initializeApp(firebaseConfig);
+    FB_AUTH=firebase.auth(); FB_DB=firebase.firestore();
+    FB_DB.enablePersistence({synchronizeTabs:true}).catch(function(){}); // cache offline + sincroniza
+    FB_OK=true;
+    FB_AUTH.onAuthStateChanged(function(u){
+      FB_USER=u;
+      const s=document.getElementById('s-hist');
+      if(s && s.classList.contains('active')) renderHist();
+    });
+  }
+}catch(e){ FB_OK=false; }
+
+function saveBtnHTML(rid){
+  return `<button class="share-btn rip" style="margin-top:12px;background:linear-gradient(135deg,#00897b,#26a69a);box-shadow:0 6px 16px rgba(0,137,123,.3)" onclick="salvarMedicao('${rid}')">💾 Salvar medição no histórico</button>`;
+}
+
+// ── AUTENTICAÇÃO ──
+function authMsg(m,err){ const el=document.getElementById('au-msg'); if(el){ el.textContent=m||''; el.style.color=err?'#c62828':'var(--g2)'; } }
+function traduzAuth(e){
+  const c=(e&&e.code)||'';
+  if(c.indexOf('wrong-password')>=0||c.indexOf('invalid-credential')>=0) return 'E-mail ou senha incorretos.';
+  if(c.indexOf('user-not-found')>=0) return 'Conta não encontrada — toque em Criar conta.';
+  if(c.indexOf('email-already-in-use')>=0) return 'Esse e-mail já tem conta — toque em Entrar.';
+  if(c.indexOf('invalid-email')>=0) return 'E-mail inválido.';
+  if(c.indexOf('weak-password')>=0) return 'Senha fraca (mínimo 6 caracteres).';
+  if(c.indexOf('popup-closed')>=0||c.indexOf('cancelled-popup')>=0) return 'Login cancelado.';
+  if(c.indexOf('network')>=0) return 'Sem internet para entrar agora.';
+  return 'Não foi possível entrar ('+(c||'erro')+').';
+}
+function loginGoogle(){
+  if(!FB_OK){ toast('Sem conexão para login agora'); return; }
+  FB_AUTH.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    .then(function(r){ FB_USER=r.user; toast('Bem-vindo! 👋'); goTo('hist'); })
+    .catch(function(e){ authMsg(traduzAuth(e),true); });
+}
+function loginEmail(){
+  if(!FB_OK){ toast('Sem conexão para login agora'); return; }
+  const em=(document.getElementById('au-email')||{}).value||'', pw=(document.getElementById('au-pass')||{}).value||'';
+  if(!em||!pw){ authMsg('Preencha e-mail e senha.',true); return; }
+  FB_AUTH.signInWithEmailAndPassword(em.trim(),pw)
+    .then(function(r){ FB_USER=r.user; toast('Bem-vindo! 👋'); goTo('hist'); })
+    .catch(function(e){ authMsg(traduzAuth(e),true); });
+}
+function signupEmail(){
+  if(!FB_OK){ toast('Sem conexão para login agora'); return; }
+  const em=(document.getElementById('au-email')||{}).value||'', pw=(document.getElementById('au-pass')||{}).value||'';
+  if(!em||!pw){ authMsg('Preencha e-mail e senha.',true); return; }
+  if(pw.length<6){ authMsg('A senha precisa ter ao menos 6 caracteres.',true); return; }
+  FB_AUTH.createUserWithEmailAndPassword(em.trim(),pw)
+    .then(function(r){ FB_USER=r.user; toast('Conta criada! 🎉'); goTo('hist'); })
+    .catch(function(e){ authMsg(traduzAuth(e),true); });
+}
+function logout(){ if(FB_AUTH) FB_AUTH.signOut().then(function(){ FB_USER=null; toast('Você saiu'); renderHist(); }); }
+
+// ── SALVAR / EXCLUIR MEDIÇÃO ──
+function medFromCorr(rid){
+  const rec=RECIPES[rid];
+  const at=val(rid+'-cAt',0), ds=val(rid+'-cDs',rec.ecAlvo), vol=Math.max(1,val(rid+'-cvol',3000));
+  const delta=ds-at; let acao, detalhe;
+  if(Math.abs(delta)<5){ acao='Sem ajuste'; detalhe='EC já no valor'; }
+  else if(delta<0){ acao='Adicionar água'; detalhe=nf((vol*(at/ds-1)).toFixed(0))+' L de água'; }
+  else{ acao='Adicionar adubo'; detalhe='+'+ecf(delta)+' µS/cm'; }
+  return { marca:rec.nome, rid:rid, ecAtual:at, ecDesejado:ds, volume:vol, acao:acao, detalhe:detalhe };
+}
+function salvarMedicao(rid){
+  if(!FB_OK || !FB_USER){ toast('Entre na sua conta para salvar 👇'); goTo('hist'); return; }
+  const m=medFromCorr(rid);
+  m.ts=firebase.firestore.FieldValue.serverTimestamp();
+  m.tsLocal=Date.now();
+  FB_DB.collection('users').doc(FB_USER.uid).collection('medicoes').add(m)
+    .then(function(){ toast('💾 Medição salva!'); const s=document.getElementById('s-hist'); if(s&&s.classList.contains('active')) renderHist(); })
+    .catch(function(){ toast('Não consegui salvar agora'); });
+}
+function excluirMedicao(id){
+  if(!FB_OK||!FB_USER) return;
+  FB_DB.collection('users').doc(FB_USER.uid).collection('medicoes').doc(id).delete()
+    .then(function(){ toast('Excluído'); renderHist(); }).catch(function(){ toast('Não consegui excluir'); });
+}
+
+// ── TELA HISTÓRICO ──
+function loginHTML(){
+  return `<div class="card">
+    <div class="card-ttl"><span class="ci">🔐</span>Entrar para ter seu histórico</div>
+    <div class="howto">Seu histórico de medições fica salvo na <b>sua conta</b> e te acompanha em qualquer celular. Entre com o Google ou crie uma conta com e-mail e senha.</div>
+    <button class="gbtn rip" onclick="loginGoogle()"><span class="gg">G</span> Entrar com Google</button>
+    <div class="au-or">— ou com e-mail —</div>
+    <input id="au-email" class="au-inp" type="email" inputmode="email" autocomplete="email" placeholder="seu@email.com">
+    <input id="au-pass" class="au-inp" type="password" autocomplete="current-password" placeholder="sua senha (mín. 6)">
+    <div class="au-btns">
+      <button class="au-b au-entrar rip" onclick="loginEmail()">Entrar</button>
+      <button class="au-b au-criar rip" onclick="signupEmail()">Criar conta</button>
+    </div>
+    <div id="au-msg" class="au-msg"></div>
+  </div>`;
+}
+function histItemHTML(id,m){
+  const d=new Date(m.tsLocal||Date.now());
+  const data=d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const ic=m.rid==='yara'?'🔵':'🟣';
+  const cor=m.acao==='Adicionar adubo'?'#2e7d32':(m.acao==='Adicionar água'?'#1565c0':'#62757f');
+  return `<div class="hist-item">
+    <div class="hist-top"><span class="hist-marca">${ic} ${m.marca}</span><span class="hist-date">${data}</span></div>
+    <div class="hist-body">
+      <span class="hist-chip">EC medido <b>${ecf(m.ecAtual)}</b></span>
+      <span class="hist-chip">→ alvo <b>${ecf(m.ecDesejado)}</b></span>
+      <span class="hist-chip">🪣 ${nf(m.volume)} L</span>
+    </div>
+    <div class="hist-acao" style="color:${cor}">${m.acao}: <b>${m.detalhe}</b></div>
+    <button class="hist-del rip" onclick="excluirMedicao('${id}')">🗑️</button>
+  </div>`;
+}
+function renderHist(){
+  const el=document.getElementById('s-hist'); if(!el) return;
+  if(!FB_OK){
+    el.innerHTML='<div class="card"><div class="card-ttl"><span class="ci">📜</span>Histórico</div><div class="alrt alrt-i"><span class="ai">📡</span><div>Sem conexão para carregar o histórico agora. Tente de novo com internet.</div></div></div>';
+    return;
+  }
+  if(!FB_USER){ el.innerHTML=loginHTML(); return; }
+  const nome=FB_USER.displayName||FB_USER.email||'você';
+  el.innerHTML=`<div class="card">
+    <div class="card-ttl"><span class="ci">📜</span>Meu histórico</div>
+    <div class="hist-user">👤 ${nome}<button class="hist-out rip" onclick="logout()">Sair</button></div>
+    <div class="howto">As medições que você salvar na aba <b>Correção</b> (botão 💾) aparecem aqui — na sua conta, em qualquer aparelho.</div>
+    <div id="hist-list"><div class="note">Carregando…</div></div>
+  </div>`;
+  FB_DB.collection('users').doc(FB_USER.uid).collection('medicoes').orderBy('tsLocal','desc').limit(200).get()
+    .then(function(snap){
+      const list=document.getElementById('hist-list'); if(!list) return;
+      if(snap.empty){ list.innerHTML='<div class="note">Você ainda não salvou nenhuma medição. Vá na aba <b>Correção</b>, calcule e toque em <b>💾 Salvar medição</b>.</div>'; return; }
+      let html=''; snap.forEach(function(doc){ html+=histItemHTML(doc.id, doc.data()); });
+      list.innerHTML=html;
+    })
+    .catch(function(){ const list=document.getElementById('hist-list'); if(list) list.innerHTML='<div class="alrt alrt-w"><span class="ai">⚠️</span><div>Não consegui carregar o histórico agora.</div></div>'; });
+}
 
 // ── INIT ──
 window.onload=function(){

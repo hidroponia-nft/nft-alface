@@ -3,7 +3,7 @@
    e continua funcionando offline com a ultima versao baixada.
    Resolve o cache teimoso do iOS quando o app fica como icone na tela inicial. */
 
-const CACHE = 'nft-alface-v1';
+const CACHE = 'nft-alface-v2';
 const CORE = ['./', './index.html'];
 
 self.addEventListener('install', (e) => {
